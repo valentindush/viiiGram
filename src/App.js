@@ -24,7 +24,7 @@ function App() {
             <Route path='/chat' element={<Chat/>} />
             <Route path='/chat/message' element={<Messanger/>}/>
             <Route path='/Login' element={<Login hide={hideFunc}/>} />
-            <Route path='/signup' element={<Signup/>} />
+            <Route exact path='/signup' element={<Signup hide={hideFunc}/>} />
           </Routes>
         </Router>
         {show !== false && <Nav />}
