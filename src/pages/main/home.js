@@ -6,10 +6,10 @@ export default function Home() {
   return (
     <div className='Home'>
       
-      <div className='stories flex gap-2 relative overflow-x-auto p-2'>
-      <div className='flex flex-col items-center'>
-        <div className='img w-[65px] h-[65px] border-[1px]  rounded-full p-1 bg-gradient-to-r from-pink-400 to-red-200'>
-            
+      <div className='stories  flex gap-2 relative overflow-x-auto p-2'>
+      <div className='flex cursor-pointer flex-col items-center'>
+        <div className='img w-[60px] h-[60px] border-[1px] flex items-center justify-center  rounded-full p-1 bg-gradient-to-r from-pink-400 to-red-200 hover:bg-gradient-to-tr transition duration-500'>
+        <svg className='fill-white w-[40px] h-[40px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M432 256c0 17.69-14.33 32.01-32 32.01H256v144c0 17.69-14.33 31.99-32 31.99s-32-14.3-32-31.99v-144H48c-17.67 0-32-14.32-32-32.01s14.33-31.99 32-31.99H192v-144c0-17.69 14.33-32.01 32-32.01s32 14.32 32 32.01v144h144C417.7 224 432 238.3 432 256z"/></svg>
         </div>
             <div className='username text-xs font-normal'>
                 your story
