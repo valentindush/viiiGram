@@ -56,7 +56,7 @@ module.exports.CreateAccount = async(req,res,next)=>{
                 if(await newUser.save()){
                     const accessToken =  jwt.sign({email: username,password:password},process.env.JWT_KEY,{expiresIn: '1d'})
 
-                    SendVerificationCode(verficationCode,email)
+                    SendVerificationCode(verficationCode,email,newUser._id)
 
                     console.log("done")
                     
@@ -96,6 +96,27 @@ module.exports.login = async (req,res,next)=>{
         }
         
     } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.verifyAccount = async (req,res,next)=>{
+
+    try {
+
+        const code = req.body.code
+        const uuid = req.body.uuid
+        const user = await UsersSchema.findById(uuid)
+
+        if(user){
+
+            if(user.verificationCode == code){
+                const updateUser = await UsersSchema.updateOne({_id: user._id},{$set:{verified:true}})
+            }
+        }
+        
+    } catch (err) {
+        
         next(err)
     }
 }
