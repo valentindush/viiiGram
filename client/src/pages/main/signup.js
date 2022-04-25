@@ -7,6 +7,16 @@ export default function Signup(props) {
     })
     const inputClass = "border mt-2 rounded-[4px] font-mormal p-2  text-sm border-slate-200 outline-none focus:border-black block w-full text-black"
 
+    const [fullname ,setFullName] = useState("")
+    const [username,setUsername] = useState("")
+    const [email,setEmail] = useState("")
+    const [password,setPassoword] = useState("")
+
+    const handleSignUp = (e)=>{
+        e.preventDefault()
+        
+    }
+
   return (
     <div className='h-full  w-full flex flex-col justify-center items-center'>
         <div className='logo pb-5'>
@@ -15,7 +25,7 @@ export default function Signup(props) {
         <div className=''>
             <p className='text-sm'>Signup to see photos and videos from your friends</p>
         </div>
-        <form className='w-full p-[40px] pt-4 ' autoComplete='off'>
+        <form className='w-full p-[40px] pt-4 ' autoComplete='off' onSubmit={(e)=>handleSignUp(e)}>
             <div className='field w-full'>
                 <input className={`${inputClass}`}  type={'email'} placeholder="Email address"/>
             </div>

@@ -1,6 +1,7 @@
 const { UsersSchema } = require("../models/userModel");
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const { SendVerificationCode } = require("../utils/mailVerification");
 require('dotenv').config()
 
 
@@ -33,20 +34,21 @@ module.exports.CreateAccount = async(req,res,next)=>{
             if(isEmailtTaken){
                 return res.json({msg: "Email is already taken", status: false})
             }else{
+                const isUsernameTaken = await UsersSchema.findOne({username: username})
 
+                if(isUsernameTaken) return res.json({msg: "Username is  already taken"})
                 const newPasword = await bcrypt.hash(password,10)
 
                 const code = Math.floor(Math.random() * 100000)
                 const date = Date.now()
                 const verficationCode  = `${code.toString() + date.toString()}`
-                console.log(verficationCode)
                 const newUser = UsersSchema({
                     fullname: fullname,
                     username: username,
                     email: email,
+                    password: newPasword,
                     followers: {},
                     following: {},
-                    password: password,
                     verified: false,
                     verificationCode: verficationCode
                 })
@@ -54,14 +56,43 @@ module.exports.CreateAccount = async(req,res,next)=>{
                 if(await newUser.save()){
                     const accessToken =  jwt.sign({email: username,password:password},process.env.JWT_KEY,{expiresIn: '1d'})
 
+                    SendVerificationCode(verficationCode,email)
 
-
-                    return res.json({token: accessToken, user: newUser})
+                    console.log("done")
+                    
+                    return res.json({token: accessToken, statu: true})
 
                 }else{
                     return res.json({msg: "db error", status: false})
                 }
             }
+        }
+        
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.login = async (req,res,next)=>{
+
+    try {
+
+        const email = req.body.email
+        const password = req.body.password
+
+        const user = await UsersSchema.findOne({email: email})
+        if(!user) return res.json({msg:"Incorrect username or password", status: false})
+        if(await bcrypt.compare(password,user.password)){
+
+            if(user.verified === false) return res.json({msg: "Account is not verified please check your email inbox and verfy it",status:false})
+
+            const accessToken = jwt.sign({email: email, password: password}, process.env.JWT_KEY, {expiresIn: '1d'})
+
+            return res.json({status: true, token: accessToken})
+
+            
+        }else{
+            return res.json({msg: "Incorrect username or password", status: false})
         }
         
     } catch (err) {

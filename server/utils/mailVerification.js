@@ -1,12 +1,14 @@
-const nodeMailer = require('nodema')
+const nodeMailer = require('nodemailer')
 module.exports.SendVerificationCode = (code,email_to)=>{
 
     const transport = nodeMailer.createTransport({
         service: "gmail",
+        secure: true,
         auth:{
             user: process.env.FROM,
             pass: process.env.FROM_PASS
-        }
+        },
+        tls: {rejectUnauthorized: false}
     })
 
     const htmlMail = `
@@ -29,7 +31,12 @@ module.exports.SendVerificationCode = (code,email_to)=>{
 
     try {
 
-        transport.sendMail(mailDetails)
+        transport.sendMail(mailDetails,(err,data)=>{
+            if(err) {
+                console.log(err)
+                
+            }
+        })
         
     } catch (err) {
         console.log("error : " + err);
