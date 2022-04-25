@@ -22,13 +22,13 @@ module.exports.CreateAccount = async(req,res,next)=>{
         if(fullname == "" || username=="" || email=="" || password==""){
            return res.json({msg: "All fields are required",status:false})
         }else if(fullname.length < 4 || fullname.length > 20){
-            return res.json({msg: "Invalid name given", status: false})
+            return res.json({msg: "must not contain specail characters and must be between 4 an 20 characters", status: false})
         }else if(username.length < 4 || username.length > 20){
             return res.json({msg:"Username must not contain specail characters and must be between 4 an 20 characters",status:false})
         }else if(!email.match(mailPattern)){
             return res.json({msg:'invalid email address', status:false})
-        }else if(password.length <8){
-            return res.json({msg:"Password must be atleast 8 characters",status: "false"})
+        }else if(password.length <8 || password.length > 20){
+            return res.json({msg:"Password must be atleast 8 characters and not more than 20",status: "false"})
         }else{
             const isEmailtTaken = await UsersSchema.findOne({email: email})
             if(isEmailtTaken){
@@ -60,7 +60,7 @@ module.exports.CreateAccount = async(req,res,next)=>{
 
                     console.log("done")
                     
-                    return res.json({token: accessToken, statu: true})
+                    return res.json({token: accessToken, status: true})
 
                 }else{
                     return res.json({msg: "db error", status: false})
@@ -112,6 +112,11 @@ module.exports.verifyAccount = async (req,res,next)=>{
 
             if(user.verificationCode == code){
                 const updateUser = await UsersSchema.updateOne({_id: user._id},{$set:{verified:true}})
+                if(updateUser){
+                    return res.json({msg: "verified", status: false})
+                }
+            }else{
+                return req.json({msg: "Account verification failed", status: false})
             }
         }
         

@@ -19,7 +19,7 @@ module.exports.SendVerificationCode = (code,email_to,uuid)=>{
                     <p>Thank you fo creating ViiGram account</p>
                     <p>Click the following link to activate your account</p>
                     
-                    <a target="_blank" href="http://localhost:3000/auth/verfication?code=${code}?uid=${uuid}">http://localhost:3000/auth/verfication?code=${code}</a>
+                    <a target="_blank" href="http://172.22.112.1:3000/auth/verfication?code=${code}?uid=${uuid}">http://localhost:3000/auth/verfication?code=${code}</a>
                     </section>`
 
     const mailDetails = {

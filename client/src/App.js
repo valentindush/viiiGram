@@ -9,6 +9,7 @@ import Messanger from './pages/main/messenger';
 import Login from './pages/main/login';
 import Signup from './pages/main/signup';
 import VerifyAccount from './pages/main/verifyAccount';
+import Search from './pages/main/search';
 
 function App() {
   const [show,setShow] = useState(true)
@@ -27,6 +28,7 @@ function App() {
             <Route path='/Login' element={<Login hide={hideFunc}/>} />
             <Route exact path='/signup' element={<Signup hide={hideFunc}/>} />
             <Route path='/auth/verification' element={<VerifyAccount hide={hideFunc}/>}/>
+            <Route path='/search' element={<Search/>}/>
           </Routes>
         </Router>
         {show !== false && <Nav />}
