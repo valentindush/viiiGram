@@ -27,7 +27,7 @@ export default function Signup(props) {
         </div>
         <form className='w-full p-[40px] pt-4 ' autoComplete='off' onSubmit={(e)=>handleSignUp(e)}>
             <div className='field w-full'>
-                <input className={`${inputClass}`}  type={'email'} placeholder="Email address"/>
+                <input className={`${inputClass}`} value={email} onChange={(e)=>setEmail(e.target.value)}  type={'email'} placeholder="Email address"/>
             </div>
             <div className='field w-full'>
                 <input className={`${inputClass}`}  type={'text'} placeholder="Full name"/>
@@ -35,7 +35,7 @@ export default function Signup(props) {
             <div className='field w-full'>
                 <input className={`${inputClass}`}  type={'text'} placeholder="username"/>
             </div>
-            <div className='field w-full'>
+            <div className='field w-full'>  
                 <input className={`${inputClass}`}  type={'password'} placeholder="Password"/>
             </div>
             <div className='submit pt-2'>

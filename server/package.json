@@ -6,6 +6,9 @@
   "repository": "",
   "author": "dush",
   "license": "MIT",
+  "scripts": {
+      "start": "nodemon app.js"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
