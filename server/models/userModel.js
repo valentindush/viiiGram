@@ -5,6 +5,7 @@ const UsersSchema = new mongoose.Schema({
     email: {type:String, required:true},
     followers: {type: Object,required:true,default:{}},
     following: {type: Object,required:true, default:{}},
-    verified:{type:Boolean,default:false,required:true}
+    verified:{type:Boolean,default:false,required:true},
+    verificationCode: {type: String, required:true}
 })
 module.exports.UsersSchema  = mongoose.model('users',UsersSchema)
