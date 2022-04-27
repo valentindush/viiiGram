@@ -54,7 +54,7 @@ module.exports.CreateAccount = async(req,res,next)=>{
                 })
                 
                 if(await newUser.save()){
-                    const accessToken =  jwt.sign({email: username,password:password},process.env.JWT_KEY,{expiresIn: '1d'})
+                    const accessToken =  jwt.sign({email: email, username: username, fullname: fullname,password:password},process.env.JWT_KEY,{expiresIn: '1d'})
 
                     SendVerificationCode(verficationCode,email,newUser._id)
 
