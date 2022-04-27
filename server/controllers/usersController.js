@@ -125,3 +125,19 @@ module.exports.verifyAccount = async (req,res,next)=>{
         next(err)
     }
 }
+
+module.exports.searchUsers = async(req,res,next)=>{
+
+    try{
+
+        const token = req.body.token
+        
+        if(!token || token === "" || typeof token == 'undefined')  return res.json({msg: "Wrong request", code: "403",status: true})
+
+        
+        const users = await UsersSchema.find()
+
+    }catch(err){
+        next(err)
+    }
+}
