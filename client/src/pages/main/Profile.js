@@ -3,32 +3,58 @@ import img from './cover.png'
 import jwt_decode from 'jwt-decode'
 import ProfilePost from '../../components/profilePost'
 import axios from 'axios'
-import { searchRoute } from '../../utils/apiRoutes'
+import { getUser, searchRoute } from '../../utils/apiRoutes'
 export default function Profile() {
     const [currentUser,setCurrentUser] = useState({})
     const [posts,setPostd] = useState("2,365")
     const [following,setFollowing] = useState("456")
     const [followers,setFollowers] = useState("345.2k")
-    const [username,setUsername] = useState("Allan walker")
+    const [username,setUsername] = useState("")
+    const [fullname,setFullname] = useState("")
     const [bio,setBio] = useState('Music producer || coder "|| gamer')
+    const [uuid,setUuid] = useState(null)
+    const [isUser, setIsUser] = useState(false)
 
+    const [isFollowing, setIsFollowing] = useState(false)
+    
+    const btn_class = (isFollowing === true)? "bg-blue-400 ":"bg-pink-400 hover:bg-pink-500"
     //Nav
-
     const [tab, setTab] = useState("posts")
 
     useEffect(()=>{
         const token = JSON.parse(localStorage.getItem('viigram_access_token'))
-        const currentUser = jwt_decode(token.token)
-        setCurrentUser(currentUser)
-        setUsername(currentUser.username)
-    },[])
+        const s_currentUser = jwt_decode(token.token)
+        
+        const urlParams = new URLSearchParams(window.location.search)
+        setUuid(urlParams.get('user'))
+        if(uuid !== null){
+            axios.post(getUser,{token: token.token, uuid})
+                .then((res)=>{
+                    if(res.data.status === true){
+                        setCurrentUser(res.data.result)
+                        setUsername(currentUser.username)
+                        setFullname(currentUser.fullname)
+                        setIsUser(false)
+                    }
+                })
+        }else{
+            setCurrentUser(s_currentUser)
+            setUsername(currentUser.username)
+            setFullname(currentUser.fullname)
+            setIsUser(true)
+        }
 
+    },[currentUser, currentUser.username, uuid])
+
+    const handleFollow = ()=>{
+        
+    }
 
 
   return (
     <div className='h-[85%] w-full overflow-hidden'>
         <div className='header p-2'>
-            <div className='username text-center'><p>{username}</p></div>
+            <div className='username text-center'><p>{fullname}</p></div>
 
             <div className='flex  gap-4 pt-6 items-center pl-6'>
                 <div className='w-[75px] h-[80px]'>
@@ -52,20 +78,23 @@ export default function Profile() {
             </div>
 
             <div className='details p-2 pl-6'>
-                <p className='username p-0 font-medium'>{username}</p>
+                <p className='username p-0 font-medium'>{fullname}</p>
+                <span className='bio text-xs block font-medium text-black opacity-60'>
+                    @{username}
+                </span>
                 <span className='bio text-xs font-medium text-black opacity-60'>
                     {bio}
                 </span>
             </div>
 
-            <div className='btns pl-6 flex gap-3'>
+            {isUser === false && <div className='btns pl-6 flex gap-3'>
                 <div className='follow'>
-                    <button className='bg-pink-400 hover:bg-pink-500 transition duration-500 ease-in border-[1px] text-white p-1 px-8 rounded-md'>Follow</button>
+                    <button onClick={handleFollow} className={` transition duration-500 ease-in border-[1px] text-white p-1 px-8 rounded-md ${btn_class}`}>{isFollowing === false && "Follow"}{isFollowing === true && "Following"}</button>
                 </div>
                 <div className='msg'>
                     <button className='bg-whit p-1 border-[1px] border-slate-500  px-5 rounded-md'>Message</button>  
                 </div>
-            </div>
+            </div>}
 
             <div className='p-2 px-6 pt-4'>
                 <nav className='w-full flex justify-around shadow-md p-1'>

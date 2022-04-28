@@ -151,3 +151,45 @@ module.exports.searchUsers = async (req,res,next)=>{
         next(err)
     }
 }
+
+module.exports.getUser = async (req,res,next)=>{
+
+    try {
+
+        const token = req.body.token
+        const id = req.body.uuid
+
+        if(!token) return res.json({msg: "wrong request",code: 403, status: false})
+        if(!id) return res.json({msg: "wrong request",code: 403, status: false})
+
+        const reqData = jwt.verify(token, process.env.JWT_KEY)
+        if(!reqData) return res.json({msg: "wrong request",code: 403, status: false})
+
+
+        const user  = await UsersSchema.findOne({_id: id}).select([
+            "username",
+            "fullname",
+            "followers",
+            "following"
+        ])
+
+        if(!user) return res.json({msg: "User not found",code: 404, status: false})
+
+        if(user) return res.json({msg: "", code: 200, status: true, result: user})
+
+
+        
+        
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.like = async()=>{
+
+    try {
+        
+    } catch (err) {
+        next(err)
+    }
+}

@@ -1,7 +1,8 @@
-const { searchUsers } = require('../controllers/usersController')
+const { searchUsers, getUser } = require('../controllers/usersController')
 
-const UsersRouter = require('express').Router()
+const usersRouter = require('express').Router()
 
-UsersRouter.post('/searchusers', searchUsers)
+usersRouter.post('/searchusers', searchUsers)
+usersRouter.post('/getuser', getUser)
 
-module.exports.UsersRouter = UsersRouter
+module.exports.UsersRouter = usersRouter
