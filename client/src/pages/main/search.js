@@ -13,6 +13,7 @@ export default function Search() {
     const [searchData, setSearchData] = useState({})
     const [token,setToken] = useState({})
     const navigate = useNavigate()
+    const [searcEl,setSearchEl] = useState(<></>)
 
     useEffect(()=>{
       const localStorageData = JSON.parse(localStorage.getItem('viigram_access_token'))
@@ -23,18 +24,18 @@ export default function Search() {
       
       const token1  = localStorageData.token
       setToken(token1)
+
+      if(searchData !== ""){
+        axios.post(searchRoute,{token: token, str: searchInput})
+        .then((res)=>{
+            if(res.data.status === true){
+              setSearchData(res.data.result)
+            }
+            
+          })
+      }
     })
 
-    useEffect(()=>{
-
-      axios.get(searchRoute,
-        {
-          token: token
-        }).then((res)=>{
-          setSearchData(res.data)
-          console.log(searchData);
-        })
-    },[searchInput,token,searchData])
 
 
 
@@ -46,16 +47,10 @@ export default function Search() {
         </div>
         {isClicked === true && 
           <div className='results w-[96%] h-full absolute bg-white overflow-y-auto transition duration-500'>
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
-            <SearchUser img={img} fullname="pro ghee" username="@proghee" />
+            {searchData.map((user,key)=>{
+
+              return (<SearchUser to={"/profile?user="+user._id} img={img} fullname={`${user.fullname}`} username={`@${user.username}`} />)
+            })}
           </div>
         }
 

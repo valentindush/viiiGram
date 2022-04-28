@@ -9,4 +9,6 @@ const UsersSchema = new mongoose.Schema({
     verified:{type:Boolean,default:false,required:true},
     verificationCode: {type: String, required:true}
 })
+
+UsersSchema.index({fullname:'text', username: "text"})
 module.exports.UsersSchema  = mongoose.model('users',UsersSchema)

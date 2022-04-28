@@ -126,16 +126,26 @@ module.exports.verifyAccount = async (req,res,next)=>{
     }
 }
 
-module.exports.searchUsers = async(req,res,next)=>{
+module.exports.searchUsers = async (req,res,next)=>{
 
     try{
 
-        const token = req.body.token
-        
-        if(!token || token === "" || typeof token == 'undefined')  return res.json({msg: "Wrong request", code: "403",status: true})
+        const searchString = req.body.str
+        const token = req.body.token        
 
-        
-        const users = await UsersSchema.find()
+        if(!token || token === "" || typeof token == 'undefined') {
+            return res.json({msg: "Wrong request", code: "403",status: true})
+        }
+        const users = await UsersSchema.find({$text: {$search: searchString}}).select([
+            "fullname",
+            "username",
+            "followers",
+            "following"
+        ])
+
+        if(users){
+            return res.json({status: true, code: 200, result: users})
+        }
 
     }catch(err){
         next(err)
