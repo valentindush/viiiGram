@@ -86,7 +86,7 @@ module.exports.login = async (req,res,next)=>{
 
             // if(user.verified === false) return res.json({msg: "Account is not verified please check your email inbox and verfy it",status:false})
 
-            const accessToken = jwt.sign({email: email, username: user.password,fullname: user.fullname}, process.env.JWT_KEY, {expiresIn: '1d'})
+            const accessToken = jwt.sign({email: email, username: user.username,fullname: user.fullname}, process.env.JWT_KEY, {expiresIn: '1d'})
 
             return res.json({status: true, token: accessToken})
 
@@ -141,7 +141,7 @@ module.exports.searchUsers = async (req,res,next)=>{
 
         if(!from__data) return res.json({msg: "wrong req",code: 403, status: false})
 
-        const users = await UsersSchema.find({$text: {$search: searchString}}).select([
+        const users = await UsersSchema.find({username: {$ne: from__data.username},$text: {$search: searchString}}).select([
             "fullname",
             "username",
             "followers",
@@ -252,7 +252,7 @@ module.exports.unfollow = async(req,res,next)=>{
 
         if(user){
 
-            if(await UsersSchema.updateOne({_id: unfollow_id}, {$pull : {folowers: from__data.username}})
+            if(await UsersSchema.updateOne({_id: unfollow_id}, {$pull : {followers: from__data.username}})
             && await UsersSchema.updateOne({email: from__data.email}, {$pull: {following: unfollow_id}})){
 
                 return res.json({msg: "unfollowed", code: 200, status: true})

@@ -37,6 +37,14 @@ export default function Profile() {
                         setFollowers(currentUser.followers.length)
                         setFollowing(currentUser.following.length)
                         setIsUser(false)
+
+                        currentUser.followers.forEach(er => {
+                            if(er === s_currentUser.username){
+                                setIsFollowing(true)
+                            }else{
+                                isFollowing(false)
+                            }
+                        });
                     }
                 })
         }else{
@@ -45,6 +53,7 @@ export default function Profile() {
             setFullname(currentUser.fullname)
             setIsUser(true)
         }
+
 
         
 
@@ -64,7 +73,6 @@ export default function Profile() {
             if(isFollowing === true){
                 axios.post(unfollowRoute, {token: token.token, unfollow_id: uuid})
                 .then((res)=>{
-                    console.log(res.data)
                     if(res.data.status === true){
                         setIsFollowing(false)
                     }

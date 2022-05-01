@@ -13,7 +13,7 @@ export default function Search() {
     const [searchData, setSearchData] = useState(null)
     const [token,setToken] = useState({})
     const navigate = useNavigate()
-    
+
     useEffect(()=>{
       const localStorageData = JSON.parse(localStorage.getItem('viigram_access_token'))
 
@@ -48,7 +48,7 @@ export default function Search() {
           <div className='results w-[96%] h-full absolute bg-white overflow-y-auto transition duration-500'>
             {searchData !== null && searchData.map((user,key)=>{
 
-              return (<SearchUser to={"/profile?user="+user._id} img={img} fullname={`${user.fullname}`} username={`@${user.username}`} />)
+              return (<SearchUser key={key} to={"/profile?user="+user._id} img={img} fullname={`${user.fullname}`} username={`@${user.username}`} />)
             })}
           </div>
         }

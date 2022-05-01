@@ -42,11 +42,18 @@ export default function Post(props) {
         <div className=''>
             <p className='text-xs hover:underline cursor-pointer'>See all {props.comments.length} Comments</p>
         </div>
+
         <div className=''>
             <div className='desc text-sm py-2'>
                 <p className='text-[14px] font-semibold'>{props.username} <span className='text-sm break-words font-normal'>{props.desc}</span></p>
             </div>
 
+        </div>
+        <div className='txt w-full flex gap-1'>
+            <textarea placeholder='Add a comment . . .' className='w-full p-2 rounded-xl h-12'>
+
+            </textarea>
+            <button>Post</button>
         </div>
 
     </div>
