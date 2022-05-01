@@ -50,10 +50,10 @@ export default function Post(props) {
 
         </div>
         <div className='txt w-full flex gap-1'>
-            <textarea placeholder='Add a comment . . .' className='w-full p-2 rounded-xl h-12'>
+            <textarea placeholder='Add a comment . . .' className='w-full p-2 text-sm rounded-md h-10 border-[2px] font-normal resize-none outline-none'>
 
             </textarea>
-            <button>Post</button>
+            <button className='px-2 bg-pink-300 hover:bg-pink-500  transition duration-500 ease-linear rounded-md text-white cursor-pointer'>Post</button>
         </div>
 
     </div>
