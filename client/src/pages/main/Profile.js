@@ -3,7 +3,7 @@ import img from './cover.png'
 import jwt_decode from 'jwt-decode'
 import ProfilePost from '../../components/profilePost'
 import axios from 'axios'
-import { getUser, searchRoute } from '../../utils/apiRoutes'
+import { followRoute, getUser, searchRoute, unfollowRoute } from '../../utils/apiRoutes'
 export default function Profile() {
     const [currentUser,setCurrentUser] = useState({})
     const [posts,setPostd] = useState("2,365")
@@ -34,6 +34,8 @@ export default function Profile() {
                         setCurrentUser(res.data.result)
                         setUsername(currentUser.username)
                         setFullname(currentUser.fullname)
+                        setFollowers(currentUser.followers.length)
+                        setFollowing(currentUser.following.length)
                         setIsUser(false)
                     }
                 })
@@ -44,10 +46,31 @@ export default function Profile() {
             setIsUser(true)
         }
 
+        
+
     },[currentUser, currentUser.username, uuid])
 
     const handleFollow = ()=>{
-        
+        const token = JSON.parse(localStorage.getItem('viigram_access_token'))
+        if(isFollowing === false){
+            
+            axios.post(followRoute, {token: token.token, to_id: uuid})
+            .then((res)=>{
+                if(res.data.status === true){
+                    setIsFollowing(true)
+                }
+            })
+        }else {
+            if(isFollowing === true){
+                axios.post(unfollowRoute, {token: token.token, unfollow_id: uuid})
+                .then((res)=>{
+                    console.log(res.data)
+                    if(res.data.status === true){
+                        setIsFollowing(false)
+                    }
+                })
+            }
+        }
     }
 
 
@@ -100,7 +123,7 @@ export default function Profile() {
                 <nav className='w-full flex justify-around shadow-md p-1'>
                     <div onClick={()=> setTab("posts")} className='hover:bg-slate-100 p-1 w-full flex items-center justify-center cursor-pointer'>
                         <svg className='cursor-pointer' aria-label="Posts" class="_8-yf5 " color="#8e8e8e" fill="#8e8e8e" height="24" role="img" viewBox="0 0 24 24" width="24">
-                            <rect fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="18" x="3" y="3"></rect><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="9.015" x2="9.015" y1="3" y2="21"></line><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="14.985" x2="14.985" y1="3" y2="21"></line><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="21" x2="3" y1="9.015" y2="9.015"></line><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="21" x2="3" y1="14.985" y2="14.985"></line>
+                            <rect fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" width="18" x="3" y="3"></rect><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="9.015" x2="9.015" y1="3" y2="21"></line><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="14.985" x2="14.985" y1="3" y2="21"></line><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="21" x2="3" y1="9.015" y2="9.015"></line><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="21" x2="3" y1="14.985" y2="14.985"></line>
                         </svg>
                     </div>
                     <div onClick={()=>setTab("videos")} className='hover:bg-slate-100 p-1 w-full flex items-center justify-center cursor-pointer'>

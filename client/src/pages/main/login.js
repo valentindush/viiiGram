@@ -32,8 +32,8 @@ export default function Login(props) {
                     if(response.data.status === false){
                         setError(response.data.msg)
                     }else{
-                        const token = response.data.token
-                        localStorage.setItem(JSON.stringify(token))
+                        const token = response.data
+                        localStorage.setItem('viigram_access_token',JSON.stringify(token))
                         navigate('/')
                     }
                 }).catch((error)=>{

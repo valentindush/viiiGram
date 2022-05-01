@@ -10,11 +10,10 @@ export default function Search() {
 
     const [searchInput, setSearchInput] = useState('')
     const [isClicked, setIsClicked] = useState(false)
-    const [searchData, setSearchData] = useState({})
+    const [searchData, setSearchData] = useState(null)
     const [token,setToken] = useState({})
     const navigate = useNavigate()
-    const [searcEl,setSearchEl] = useState(<></>)
-
+    
     useEffect(()=>{
       const localStorageData = JSON.parse(localStorage.getItem('viigram_access_token'))
 
@@ -24,11 +23,11 @@ export default function Search() {
       
       const token1  = localStorageData.token
       setToken(token1)
-
-      if(searchData !== ""){
+      if(searchInput !== ""){
         axios.post(searchRoute,{token: token, str: searchInput})
         .then((res)=>{
             if(res.data.status === true){
+
               setSearchData(res.data.result)
             }
             
@@ -47,7 +46,7 @@ export default function Search() {
         </div>
         {isClicked === true && 
           <div className='results w-[96%] h-full absolute bg-white overflow-y-auto transition duration-500'>
-            {searchData.map((user,key)=>{
+            {searchData !== null && searchData.map((user,key)=>{
 
               return (<SearchUser to={"/profile?user="+user._id} img={img} fullname={`${user.fullname}`} username={`@${user.username}`} />)
             })}

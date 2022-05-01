@@ -4,8 +4,8 @@ const UsersSchema = new mongoose.Schema({
     username: {type: String, max:20, min:4,required:true},
     email: {type:String, required:true},
     password: {type: String, min: 7, max: 20 ,required: true},
-    followers: {type: Object,required:true,default:{}},
-    following: {type: Object,required:true, default:{}},
+    followers: {type: Array,required:true,default:[]},
+    following: {type: Array,required:true, default:[]},
     verified:{type:Boolean,default:false,required:true},
     verificationCode: {type: String, required:true}
 })

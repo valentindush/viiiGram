@@ -47,14 +47,14 @@ module.exports.CreateAccount = async(req,res,next)=>{
                     username: username,
                     email: email,
                     password: newPasword,
-                    followers: {},
-                    following: {},
+                    followers: [],
+                    following: [],
                     verified: false,
                     verificationCode: verficationCode
                 })
                 
                 if(await newUser.save()){
-                    const accessToken =  jwt.sign({email: email, username: username, fullname: fullname,password:password},process.env.JWT_KEY,{expiresIn: '1d'})
+                    const accessToken =  jwt.sign({email: email, username: username, fullname: fullname},process.env.JWT_KEY,{expiresIn: '1d'})
 
                     SendVerificationCode(verficationCode,email,newUser._id)
 
@@ -84,9 +84,9 @@ module.exports.login = async (req,res,next)=>{
         if(!user) return res.json({msg:"Incorrect username or password", status: false})
         if(await bcrypt.compare(password,user.password)){
 
-            if(user.verified === false) return res.json({msg: "Account is not verified please check your email inbox and verfy it",status:false})
+            // if(user.verified === false) return res.json({msg: "Account is not verified please check your email inbox and verfy it",status:false})
 
-            const accessToken = jwt.sign({email: email, password: password}, process.env.JWT_KEY, {expiresIn: '1d'})
+            const accessToken = jwt.sign({email: email, username: user.password,fullname: user.fullname}, process.env.JWT_KEY, {expiresIn: '1d'})
 
             return res.json({status: true, token: accessToken})
 
@@ -133,9 +133,14 @@ module.exports.searchUsers = async (req,res,next)=>{
         const searchString = req.body.str
         const token = req.body.token        
 
-        if(!token || token === "" || typeof token == 'undefined') {
-            return res.json({msg: "Wrong request", code: "403",status: true})
+        if(!token || token == null || token == "") {
+            return res.json({msg: "Wrong 12 request", code: "403",status: true})
         }
+
+        const from__data = jwt.verify(token.toString(), process.env.JWT_KEY)
+
+        if(!from__data) return res.json({msg: "wrong req",code: 403, status: false})
+
         const users = await UsersSchema.find({$text: {$search: searchString}}).select([
             "fullname",
             "username",
@@ -159,11 +164,11 @@ module.exports.getUser = async (req,res,next)=>{
         const token = req.body.token
         const id = req.body.uuid
 
-        if(!token) return res.json({msg: "wrong request",code: 403, status: false})
-        if(!id) return res.json({msg: "wrong request",code: 403, status: false})
+        if(!token) return res.json({msg: "wrong tpken request",code: 403, status: false})
+        if(!id) return res.json({msg: "wrong id request",code: 403, status: false})
 
         const reqData = jwt.verify(token, process.env.JWT_KEY)
-        if(!reqData) return res.json({msg: "wrong request",code: 403, status: false})
+        if(!reqData) return res.json({msg: "wrong 3re request",code: 403, status: false})
 
 
         const user  = await UsersSchema.findOne({_id: id}).select([
@@ -185,9 +190,78 @@ module.exports.getUser = async (req,res,next)=>{
     }
 }
 
-module.exports.like = async()=>{
+module.exports.follow = async(req,res,next)=>{
 
     try {
+        const token = req.body.token
+        if(!token) return res.json({msg: "wrong ||  request", code: 403, status: false})
+        const userToFollowId = req.body.to_id
+
+        
+        const From__Data = jwt.verify(token, process.env.JWT_KEY)
+        if(!From__Data) return res.json({msg: "wrong ||||||||| request",code: 403, status: false})
+
+        const user = await UsersSchema.findOne({email: From__Data.email})
+        if(!user) return res.json({msg: "wrong @@ request",code: 403, status: false})
+
+        if(!userToFollowId) return res.json({msg: "wrong request",code: 403, status: false})
+
+        const userTofollow = await UsersSchema.findOne({_id: userToFollowId})
+        if(!userTofollow) return res.json({msg: "wrong request",code: 403, status: false})
+
+        if(userTofollow){
+            if(userTofollow.username != From__Data.username){
+                if(await UsersSchema.updateOne({_id: userToFollowId}, {$addToSet: {followers: From__Data.username}}) 
+                && await UsersSchema.updateOne({username: From__Data.username},{$addToSet: {following: userToFollowId}} )){
+                    
+                    // console.log(From__Data.username);
+                    // console.log(await UsersSchema.findById(userToFollowId))
+                    return res.json({msg: "followed", status: true,code: 200})
+                }else{
+                    res.json({msg: "failed", status: false, code: 403})
+                }
+            }else{
+                return res.json({msg: "Hcking doesn't work LOl", code: "fck you", status: false})
+            }
+        }else{
+            res.json({msg: "failed", status: false, code: 403})
+        }
+
+
+
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.unfollow = async(req,res,next)=>{
+
+    try {
+
+        const token = req.body.token
+        const unfollow_id = req.body.unfollow_id
+
+        if(!token || !unfollow_id) return res.json({msg: "Wrong 1 request",code: 403, status: false})
+        
+        const from__data = jwt.verify(token, process.env.JWT_KEY)
+        if(!from__data) return res.json({msg: "Wrong 2 request", code: 403, status: false})
+
+        const user = await UsersSchema.findOne({email: from__data.email})
+
+        if(!user) return res.json({msg: "wrong 3 request", code: 403, status: false})
+
+        if(user){
+
+            if(await UsersSchema.updateOne({_id: unfollow_id}, {$pull : {folowers: from__data.username}})
+            && await UsersSchema.updateOne({email: from__data.email}, {$pull: {following: unfollow_id}})){
+
+                return res.json({msg: "unfollowed", code: 200, status: true})
+            }else{
+                return res.json({msg: "failed", code: 500, status: false})
+            }
+        }
+
+
         
     } catch (err) {
         next(err)
