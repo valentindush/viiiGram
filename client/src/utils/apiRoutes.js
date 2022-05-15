@@ -7,3 +7,7 @@ export const searchRoute = `${host}/searchusers`
 export const getUser = `${host}/getuser`
 export const followRoute = `${host}/follow`
 export const unfollowRoute = `${host}/unfollow`
+export const postRoute = `${host}/post`
+export const HomeLoginRoute = `${host}/auth/login_home`
+export const getPostsRoute = `${host}/getposts`
+export const getAllUsers = `${host}/getallusers`

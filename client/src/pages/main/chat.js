@@ -1,7 +1,31 @@
-import React from 'react'
+import axios from 'axios'
+import React,{useEffect,useState} from 'react'
 import ChatUser from '../../components/chatUser'
 import img from './cover.png'
+import { useNavigate } from 'react-router-dom'
+import { getAllUsers } from '../../utils/apiRoutes'
 export default function Chat() {
+
+  const navigate = useNavigate()
+  const [users,setUsers] = useState(null)
+  const [accessToken, setAccessToken] = useState("")
+  useEffect(()=>{
+    const token = JSON.parse(localStorage.getItem('viigram_access_token'))
+    if(!token) navigate('/login')
+
+    if(token){
+      setAccessToken(token.token)
+    }
+    axios.post()
+  },[])
+
+  useEffect(()=>{
+
+    axios.post(getAllUsers, {token: accessToken})
+    .then((res)=>{
+      console.log(res)
+    })
+  },[users])
   return (
     <div className='h-full  px-5 overflow-auto'>
         <div className=' sticky py-1 px-1 top-0 bg-white z-10'>

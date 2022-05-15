@@ -19,16 +19,16 @@ module.exports.CreateAccount = async(req,res,next)=>{
         const namePattern = /^[a-zA-Z\\s]*$/
         const usernamePattern = /^[a-zA-Z0-9_][a-zA-Z0-9_.]*/;
         
-        if(fullname == "" || username=="" || email=="" || password==""){
+        if(fullname === "" || username==="" || email==="" || password===""){
            return res.json({msg: "All fields are required",status:false})
         }else if(fullname.length < 4 || fullname.length > 20){
-            return res.json({msg: "must not contain specail characters and must be between 4 an 20 characters", status: false})
+            return res.json({msg: "must not contain special characters and must be between 4 an 20 characters", status: false})
         }else if(username.length < 4 || username.length > 20){
-            return res.json({msg:"Username must not contain specail characters and must be between 4 an 20 characters",status:false})
+            return res.json({msg:"Username must not contain special characters and must be between 4 an 20 characters",status:false})
         }else if(!email.match(mailPattern)){
             return res.json({msg:'invalid email address', status:false})
         }else if(password.length <8 || password.length > 20){
-            return res.json({msg:"Password must be atleast 8 characters and not more than 20",status: "false"})
+            return res.json({msg:"Password must be at least 8 characters and not more than 20",status: "false"})
         }else{
             const isEmailtTaken = await UsersSchema.findOne({email: email})
             if(isEmailtTaken){
@@ -70,6 +70,31 @@ module.exports.CreateAccount = async(req,res,next)=>{
         
     } catch (err) {
         next(err)
+    }
+}
+
+module.exports.login_home = async (req,res,next)=>{
+    try{
+
+        const token = req.body.token
+        const jwtData = jwt.verify(token, process.env.JWT_KEY)
+
+        if(jwtData){
+
+            const user  = await UsersSchema.findOne({username: jwtData.username})
+            if(user){
+                return  res.status(200).json({msg: "true", code: 200, status: true})
+            }else{
+                return  res.status(402).json({msg: 'auth failed', code: 403, status: false})
+            }
+
+        }else {
+            return res.status(403).json({msg: 'BAD REQ',code: 403, status: false})
+        }
+
+
+    }catch (e) {
+        next(e)
     }
 }
 
@@ -122,6 +147,34 @@ module.exports.verifyAccount = async (req,res,next)=>{
         
     } catch (err) {
         
+        next(err)
+    }
+}
+
+module.exports.getAllUsers = async(req,res,next)=>{
+    try {
+
+        const token = req.body.token
+
+        if(token){
+            
+            const userData = jwt.verify(token)
+
+            if(!token) return res.status(403).json({msg:" ", status: false})
+
+            if(token){
+
+                const users = await UsersSchema.find()
+
+                return res.json({users: users, status: true})
+            }
+
+        }else{
+            return res.json({msg: "", code: 500})
+        }
+        
+    } catch (err) {
+        return res.status(503)
         next(err)
     }
 }

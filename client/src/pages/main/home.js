@@ -1,8 +1,47 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Post from '../../components/post'
 import Story from '../../components/story'
 import img from './cover.png'
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
+import {getPostsRoute, HomeLoginRoute, host} from "../../utils/apiRoutes";
 export default function Home() {
+    const navigate = useNavigate()
+    const [postsData,setPostsData] = useState(null)
+    const [posts,setPosts] = useState(<></>)
+    //Checking token
+    const [g_token,setG_token] = useState("")
+
+    useEffect(()=>{
+        const token = JSON.parse(localStorage.getItem('viigram_access_token'))
+        setG_token(token.token)
+        if(!token){
+            navigate('/login')
+        }
+
+        if(token.token){
+
+            axios.post(HomeLoginRoute, {token: token.token})
+                .then((res)=>{
+
+                    axios.post(getPostsRoute,{token: token.token})
+                        .then((res)=>{
+
+                            if(res.data.status === true){
+                                setPostsData(res.data.posts)
+
+                            }
+                        })
+
+                    if(res.data.status !== true){
+                        navigate('/')
+                    }
+                })
+        }
+    })
+
+
+
   return (
     <div className='Home'>
       
@@ -34,14 +73,9 @@ export default function Home() {
       </div>
       
       <div className='posts p-1'>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
-        <Post comments={["CommentOne" ,"Comment2"]} likes={43} profile={img} img={img} username={"dush_val"} desc={"Listening to music on Muzika"}/>
+          {postsData !== null && postsData.map((post)=>{
+              return <Post comments={["CommentOne" ,"Comment2"]} likes={post.likes.length} profile={img} img={`http://localhost:3001/posts/${post.fileUrl}`} username={`${post.owner}`} desc={`${post.description}`}/>
+          }) }
 
       </div>
     </div>
