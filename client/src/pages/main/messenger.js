@@ -1,13 +1,44 @@
 import React from 'react'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Message from '../../components/message'
 
 import img from './cover.png'
 
 export default function Messanger() {
+
+  const [msg, setMsg] = useState("")
+  const navigate = useNavigate()
+
+
+  const setMessage = ()=>{
+    
+  }
+
+
+  useEffect(()=>{
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const token = JSON.parse(localStorage.getItem('viigram_access_token'))
+    const msg_to = urlParams.get('to')
+
+    if(!token) navigate('/login')
+
+    if(!msg_to) navigate("/chat")
+  },[])
+
+  
+
   return (
     <div className='h-[85%] overflow-auto'>
         <header className='bg-slate-100 w-full h-12 sticky top-0 z-[1000] flex justify-between items-center'>
-            <div className='flex items-center gap-1 p-1'>
+            <div className='flex items-center gap-1 p-1 pl-3'>
+                <a href='/chat'>
+                  <svg className='w-[15px] opacity-70' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M447.1 256C447.1 273.7 433.7 288 416 288H109.3l105.4 105.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448s-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L109.3 224H416C433.7 224 447.1 238.3 447.1 256z"/>
+                  </svg>
+                </a>
                 <img className='w-[30px] h-[30px] object-cover rounded-full' src={img} alt='mdf'/>
                 <span className='text-sm font-medium'>manzi_dickson</span>
             </div>
@@ -54,7 +85,7 @@ export default function Messanger() {
               </div>
             </div>
             <div className=''>
-              <textarea className='resize-none border border-slate-400 block p-2 rounded-full text-black text-sm outline-none pl-8 h-[40px] w-[300px]' placeholder='Type message ...'></textarea>
+              <textarea value={msg} onChange={(e)=>setMsg(e.target.value)} className='resize-none border border-slate-400 block p-2 rounded-full text-black text-sm outline-none pl-8 h-[40px] w-[300px]' placeholder='Type message ...'></textarea>
             </div>
             <div className='flex gap-2 p-1 items-center'>
               <div className='aud p-1 cursor-pointer '>

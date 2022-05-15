@@ -155,24 +155,19 @@ module.exports.getAllUsers = async(req,res,next)=>{
     try {
 
         const token = req.body.token
+        if(!token)return res.json({msg: "", code: 500})
 
-        if(token){
-            
-            const userData = jwt.verify(token)
+        const userData = jwt.verify(token, process.env.JWT_KEY)
 
-            if(!token) return res.status(403).json({msg:" ", status: false})
-
-            if(token){
-
-                const users = await UsersSchema.find()
-
-                return res.json({users: users, status: true})
-            }
-
-        }else{
-            return res.json({msg: "", code: 500})
-        }
+        if(!userData) return res.status(403).json({msg:" ", status: false})
+        const users = await UsersSchema.find({username: {$ne: userData.username}}).sort({_id: -1}).select([
+            "fullname",
+            "username",
+            "email",
+        ])
         
+        return res.json({users: users, status: true})
+
     } catch (err) {
         return res.status(503)
         next(err)

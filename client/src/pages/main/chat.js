@@ -9,6 +9,7 @@ export default function Chat() {
   const navigate = useNavigate()
   const [users,setUsers] = useState(null)
   const [accessToken, setAccessToken] = useState("")
+
   useEffect(()=>{
     const token = JSON.parse(localStorage.getItem('viigram_access_token'))
     if(!token) navigate('/login')
@@ -16,16 +17,23 @@ export default function Chat() {
     if(token){
       setAccessToken(token.token)
     }
-    axios.post()
+
   },[])
 
   useEffect(()=>{
+    if(accessToken){
+     axios.post(getAllUsers, {token: accessToken})
+     .then((res)=>{
+       if(res.data.status === true){
+         setUsers(res.data.users)
+       }
+     }).catch((err)=>{
+       console.log(err)
+     })
+   }
+  },)
 
-    axios.post(getAllUsers, {token: accessToken})
-    .then((res)=>{
-      console.log(res)
-    })
-  },[users])
+
   return (
     <div className='h-full  px-5 overflow-auto'>
         <div className=' sticky py-1 px-1 top-0 bg-white z-10'>
@@ -33,8 +41,12 @@ export default function Chat() {
         </div>
 
         <div className='users w-full flex h-full flex-col gap-2 overflow-y-auto'>
-            <ChatUser username={"Pro_ghee"} to="/chat/message" img={img} lastmsg="Hello there !"/>
+            {users != null &&
+              users.map((user)=>{
 
+                return <ChatUser username={user.username} img={img} to={`/chat/message?to=${user.username}`} lastmsg= "Workin" />
+              })
+            }
 
         </div>
     </div>
