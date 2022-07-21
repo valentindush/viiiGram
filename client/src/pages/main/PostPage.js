@@ -44,7 +44,7 @@ export default function PostPage() {
         }else{
             navigate('/login')
         }
-    })
+    },[])
 
     const handlePost  = (e)=>{
         e.preventDefault()

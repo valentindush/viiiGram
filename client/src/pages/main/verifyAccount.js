@@ -26,7 +26,7 @@ export default function VerifyAccount(props) {
                 }
             })
         }
-    })
+    },[])
 
   return (
     <div className='h-full w-full flex flex-col justify-center items-center'>

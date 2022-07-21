@@ -7,7 +7,7 @@ export default function Signup(props) {
     const hideFunc = props.hide
     useEffect(()=>{
         hideFunc()
-    })
+    },[])
     const inputClass = "border mt-2 rounded-[4px] font-mormal p-2  text-sm border-slate-200 outline-none focus:border-black block w-full text-black"
 
     const [fullname ,setFullName] = useState("")

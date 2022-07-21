@@ -8,7 +8,7 @@ export default function Login(props) {
     const navigate = useNavigate()
     useEffect(()=>{
         hideFunc()
-    })
+    },[])
 
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
