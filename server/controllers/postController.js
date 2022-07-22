@@ -186,13 +186,37 @@ module.exports.addComment = async(req,res,next)=>{
         if(!post) return res.status(404)
 
         try {
-            const addComment = await PostSchema.updateOne({_id:postId},{$addToSet:{comments:{by:decoded._id,comment:comment}}})
+            const addComment = await PostSchema.updateOne({_id:postId},{$addToSet:{comments:{by:decoded._id,comment:comment,id:Date.now()}}})
             return res.json({msg:"comment added !"})
         } catch (err) {
             return res.status(500)
         }
 
     } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.deleteComment = async (req,res,next)=>{
+    try {
+        
+        const {token,postId,commentId} = req.body
+
+        if(!postId||commentId||token) return res.status(402)
+        const decoded  = jwt.decode(token,process.env.JWT_KEY)
+        if(!decoded) return res.status(402)
+
+        const post = PostSchema.findById(postId)
+        if(!post) return res.status(404)
+
+        try {
+            const dlComment = await PostSchema.updateOne({_id:postId},{$pull: {comments: {by:decoded._id,id:commentId}}})
+            return res.json({msg:"Comment deleted"})
+        } catch (err) {
+            return res.status(500)
+        }
+
+    } catch (errr) {
         next(err)
     }
 }
