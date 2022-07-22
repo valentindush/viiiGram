@@ -11,3 +11,4 @@ export const postRoute = `${host}/post`
 export const HomeLoginRoute = `${host}/auth/login_home`
 export const getPostsRoute = `${host}/getposts`
 export const getAllUsers = `${host}/getallusers`
+export const likePost = `${host}/like`

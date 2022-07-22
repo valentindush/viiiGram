@@ -1,18 +1,34 @@
+import axios from 'axios'
 import React,{useState} from 'react'
+import { createSearchParams } from 'react-router-dom'
+import { likePost } from '../utils/apiRoutes'
 
 export default function Post(props) {
     const [liked, setLiked] = useState(false)
     const [likes,setLikes] = useState(props.likes)
+
+    if(props.liked) setLiked(true)
+
+    const data = JSON.parse(localStorage.getItem("viigram_access_token"))
+    const token = data.token
     const handleLikes = ()=>{
-        if(liked === true) {
-            setLikes(likes - 1)
-            setLiked(false)
-        }
-        if(liked === false){
-            setLikes(likes + 1)
-            setLiked(true)
-        }
+        axios.post(`http://localhost:3001/api/${liked?"unlike":"like"}`,{
+            token: token,
+            postId: props.id
+        }).then((res)=>{
+            if(liked === true) {
+                setLikes(likes - 1)
+                setLiked(false)
+            }
+            if(liked === false){
+                setLikes(likes + 1)
+                setLiked(true)
+            }
+        }).catch((err)=>{
+            console.log(err)
+        })
     }
+
     let likeClass = (liked===true) ? "fill-pink-500 cursor-pointer" : "fill-pink-100 stroke-black"
     const svgClass = `w-[22px] h-[22px]`
   return (
@@ -22,7 +38,7 @@ export default function Post(props) {
             <p className='text-sm'>{props.username}</p>
         </div>
         <div className='img w-full h-[200px]'>
-            <img className='w-full h-full' src={props.img} alt="post"/>
+            <img className='w-full h-full object-cover' src={props.img} alt="post"/>
         </div>
         <div className='icons flex gap-2 items-center relative pt-1'>
             <div className='likes'>

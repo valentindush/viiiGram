@@ -123,28 +123,23 @@ module.exports.getPosts = async(req,res,next)=>{
 module.exports.like = async (req,res,next)=>{
 
     try{
-
         const token = req.body.token
         const postId = req.body.postId
 
         const jwtData = jwt.verify(token, process.env.JWT_KEY)
-        if(jwtData){
-            const user = await  UsersSchema.findOne({username: jwtData.username})
+        if(!jwtData) return res.status(402)
 
-            if(user){
-                const post = await PostSchema.findOne({_id: postId})
-                if(post){
-                    const updatePost = await PostSchema.updateOne({_id: postId}, {$addToSet: {likes: user.username}})
-                    if(updatePost){
-                        return  res.json({msg: "liked", code: 200, status: true})
-                    }else{
-                        return res.status(500)
-                    }
-                }
-            }
-        }else{
-            return res.json({msg: "BAD REQUEST", code: 403, status: false})
+        const post = await PostSchema.findOne({_id:postId})
+        if(!post) return res.status(404)
+        const user = await  UsersSchema.findOne({username: jwtData.username})
+        try {
+            await PostSchema.updateOne({_id: postId}, {$addToSet: {likes: user._id}})
+            return res.json({msg:"Posted LIKED !"})           
+        } catch (err) {
+            return res.status(5000)
         }
+
+       
 
 
     }catch (e) {
@@ -159,25 +154,22 @@ module.exports.unlike = async (req,res,next)=>{
         const postId = req.body.postId
 
         const jwtData = jwt.verify(token, process.env.JWT_KEY)
-        if(jwtData){
-            const user = await  UsersSchema.findOne({username: jwtData.username})
+        if(!jwtData) return res.status(402)
+        const user = await  UsersSchema.findOne({username: jwtData.username})
+        const post = await PostSchema.findOne({_id: postId})
 
-            if(user){
-                const post = await PostSchema.findOne({_id: postId})
-                if(post){
-                    const updatePost = await PostSchema.updateOne({_id: postId}, {$pull: {likes: user.username}})
-                    if(updatePost){
-                        return  res.json({msg: "unliked", code: 200, status: true})
-                    }else{
-                        return res.status(500)
-                    }
-                }
-            }
-        }else{
-            return res.json({msg: "BAD REQUEST", code: 403, status: false})
+        if(!post) return res.status(404)
+
+        try {
+            const updatePost = await PostSchema.updateOne({_id: postId}, {$pull: {likes: user.username}})
+            return res.json({msg:"unliked!"})
+        } catch (err) {
+            return res.status(500)
         }
 
     }catch (e) {
         next(e)
     }
 }
+
+module.exports.addComment(req,res,next)

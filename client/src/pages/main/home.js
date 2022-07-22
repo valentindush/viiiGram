@@ -7,17 +7,17 @@ import axios from "axios";
 import {getPostsRoute, HomeLoginRoute, host} from "../../utils/apiRoutes";
 export default function Home() {
     const navigate = useNavigate()
-    const [postsData,setPostsData] = useState(null)
+    const [postsData,setPostsData] = useState([])
     const [posts,setPosts] = useState(<></>)
     //Checking token
     const [g_token,setG_token] = useState("")
 
     useEffect(()=>{
         const token = JSON.parse(localStorage.getItem('viigram_access_token'))
-        setG_token(token.token)
         if(!token){
             navigate('/login')
         }
+        setG_token(token.token)
 
         if(token.token){
 
@@ -29,6 +29,9 @@ export default function Home() {
 
                             if(res.data.status === true){
                                 setPostsData(res.data.posts)
+                                // postsData.forEach((post)=>{
+                                //     if(post.likes.contains())
+                                // })
 
                             }
                         })
@@ -39,7 +42,6 @@ export default function Home() {
                 })
         }
     },[])
-
 
 
   return (
@@ -58,23 +60,12 @@ export default function Home() {
         <Story src={img} username="Zlatan_Manudi"/>
         <Story src={img} username="Maguire"/>
         <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyksgskfhgskfgksfgshkgsonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
-        <Story src={img} username="meddyonly"/>
+
       </div>
       
       <div className='posts p-1'>
           {postsData !== null && postsData.map((post)=>{
-              return <Post comments={["CommentOne" ,"Comment2"]} likes={post.likes.length} profile={img} img={`http://localhost:3001/posts/${post.fileUrl}`} username={`${post.owner}`} desc={`${post.description}`}/>
+              return <Post key={post._id} id={post._id}  comments={["CommentOne" ,"Comment2"]} likes={post.likes.length} profile={img} img={`http://localhost:3001/posts/${post.fileUrl}`} username={`${post.owner}`} desc={`${post.description}`}/>
           }) }
 
       </div>

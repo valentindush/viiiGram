@@ -54,7 +54,7 @@ module.exports.CreateAccount = async(req,res,next)=>{
                 })
                 
                 if(await newUser.save()){
-                    const accessToken =  jwt.sign({email: email, username: username, fullname: fullname},process.env.JWT_KEY,{expiresIn: '1d'})
+                    const accessToken =  jwt.sign({id:newUser._id, email: email, username: username, fullname: fullname},process.env.JWT_KEY,{expiresIn: '1d'})
 
                     SendVerificationCode(verficationCode,email,newUser._id)
 
@@ -109,9 +109,9 @@ module.exports.login = async (req,res,next)=>{
         if(!user) return res.json({msg:"Incorrect username or password", status: false})
         if(await bcrypt.compare(password,user.password)){
 
-            // if(user.verified === false) return res.json({msg: "Account is not verified please check your email inbox and verfy it",status:false})
+            // if(user.verified === false) return res.satus(403).json({msg: "Account is not verified please check your email inbox and verfy it",status:false})
 
-            const accessToken = jwt.sign({email: email, username: user.username,fullname: user.fullname}, process.env.JWT_KEY, {expiresIn: '1d'})
+            const accessToken = jwt.sign({id:user.id,email: email, username: user.username,fullname: user.fullname}, process.env.JWT_KEY, {expiresIn: '1d'})
 
             return res.json({status: true, token: accessToken})
 

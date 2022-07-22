@@ -15,8 +15,10 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
 //DB connection
-const connection = mongoose.connect(process.env.DB_URL,()=>{
-    console.log("db connected");
+const connection = mongoose.connect(process.env.DB_URL).then(()=>{
+    console.log("connected")
+}).catch((err)=>{
+    throw err
 })
 
 app.use('/api/auth',AuthRouter)
