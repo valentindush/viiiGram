@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken')
 const {UsersSchema} = require("../models/userModel")
 const {PostSchema} = require("../models/postsModel");
-const multer = require('multer')
+const multer = require('multer');
+const { default: mongoose } = require('mongoose');
 
 
 //File uploading
@@ -172,4 +173,26 @@ module.exports.unlike = async (req,res,next)=>{
     }
 }
 
-module.exports.addComment(req,res,next)
+module.exports.addComment = async(req,res,next)=>{
+    try {
+
+        const {token,comment,postId} = req.body
+        if(!token,comment,postId) return res.status(402)
+        const decoded = jwt.verify(token,process.env.JWT_KEY)
+        if(!decoded) return res.status(402)
+        if(comment === "") return res.status(402)
+
+        const post = PostSchema.findById(postId)
+        if(!post) return res.status(404)
+
+        try {
+            const addComment = await PostSchema.updateOne({_id:postId},{$addToSet:{comments:{by:decoded._id,comment:comment}}})
+            return res.json({msg:"comment added !"})
+        } catch (err) {
+            return res.status(500)
+        }
+
+    } catch (err) {
+        next(err)
+    }
+}
