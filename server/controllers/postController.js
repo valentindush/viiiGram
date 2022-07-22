@@ -216,7 +216,7 @@ module.exports.deleteComment = async (req,res,next)=>{
             return res.status(500)
         }
 
-    } catch (errr) {
+    } catch (err) {
         next(err)
     }
 }
