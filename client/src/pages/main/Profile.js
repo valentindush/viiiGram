@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode'
 import ProfilePost from '../../components/profilePost'
 import axios from 'axios'
 import { followRoute, getUser, searchRoute, unfollowRoute } from '../../utils/apiRoutes'
+import { useNavigate } from 'react-router-dom'
 export default function Profile() {
     const [currentUser,setCurrentUser] = useState({})
     const [posts,setPostd] = useState("2,365")
@@ -14,7 +15,7 @@ export default function Profile() {
     const [bio,setBio] = useState('Music producer || coder "|| gamer')
     const [uuid,setUuid] = useState(null)
     const [isUser, setIsUser] = useState(false)
-
+    const navigate = useNavigate()
     const [isFollowing, setIsFollowing] = useState(false)
     
     const btn_class = (isFollowing === true)? "bg-blue-400 ":"bg-pink-400 hover:bg-pink-500"
@@ -81,6 +82,13 @@ export default function Profile() {
         }
     }
 
+    const logout = ()=>{
+        localStorage.removeItem("viigram_access_token")
+        navigate('/login')
+        console.log("ffffff")
+    }
+
+    
 
   return (
     <div className='h-[85%] w-full overflow-hidden'>
@@ -106,7 +114,10 @@ export default function Profile() {
                         <span className='text-sm'>followers</span>
                     </div>
                 </div>
+
             </div>
+            <p onClick={logout} className='text-sm text-red-500 hover:underline text-right mr-12 cursor-pointer'>Logout</p>
+
 
             <div className='details p-2 pl-6'>
                 <p className='username p-0 font-medium'>{fullname}</p>
@@ -126,7 +137,7 @@ export default function Profile() {
                     <button className='bg-whit p-1 border-[1px] border-slate-500  px-5 rounded-md'>Message</button>  
                 </div>
             </div>}
-
+            
             <div className='p-2 px-6 pt-4'>
                 <nav className='w-full flex justify-around shadow-md p-1'>
                     <div onClick={()=> setTab("posts")} className='hover:bg-slate-100 p-1 w-full flex items-center justify-center cursor-pointer'>
