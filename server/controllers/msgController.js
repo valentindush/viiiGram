@@ -20,11 +20,36 @@ module.exports.sendMsg = async(req,res,next)=>{
                 sender: decoded._id,
                 receiver: receiver
             })
-            newMsg.save()
+            await newMsg.save()
             return res.json({msg, status: true})
         } catch (err) {
             return res.status(500)
         }
+
+    } catch (err) {
+        next(err)
+    }
+}
+
+module.exports.getMessages = async(req,res,next)=>{
+    try {
+        
+        const {token,receiver} = req.body
+
+        if(!token || ! receiver) return res.status(402)
+        if(!receiver) return res.status(404)
+
+        const decoded  = jwt.verify(token,process.env.JWT_KEY)
+        if(!decoded) return res.status(403)
+
+        try {
+            const messages  = await MessageSchema.find({sender: decoded._id,receiver:receiver})
+            return res.json({messages,status:true})
+
+        } catch (err) {
+            return res.status(500)
+        }
+
 
     } catch (err) {
         next(err)
