@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { MessageSchema } = require('../models/messageModel')
+
 module.exports.sendMsg = async(req,res,next)=>{
 
     try {
