@@ -102,9 +102,7 @@ module.exports.login = async (req,res,next)=>{
 
     try {
 
-        const email = req.body.email
-        const password = req.body.password
-
+        const {email,password} = req.body
         const user = await UsersSchema.findOne({email: email})
         if(!user) return res.json({msg:"Incorrect username or password", status: false})
         if(await bcrypt.compare(password,user.password)){
@@ -156,7 +154,7 @@ module.exports.getAllUsers = async(req,res,next)=>{
     try {
 
         const token = req.body.token
-        if(!token)return res.json({msg: "", code: 500})
+        if(!token)return res.status(402).json({msg: "Token is required"})
 
         const userData = jwt.verify(token, process.env.JWT_KEY)
 
