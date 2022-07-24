@@ -1,10 +1,10 @@
 {
-  "name": "server",
+  "name": "Viigram-Backend",
   "version": "1.0.0",
-  "description": "IG CLONE",
+  "description": "Simple app for learning purposes",
   "main": "app.js",
   "repository": "",
-  "author": "dush",
+  "author": "dush valentin",
   "license": "MIT",
   "scripts": {
     "start": "nodemon app.js"
