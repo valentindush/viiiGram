@@ -43,7 +43,7 @@ module.exports.getMessages = async(req,res,next)=>{
 
         try {
             const messages  = await MessageSchema.find({sender: decoded._id,receiver:receiver})
-            return res.json({messages,status:true})
+            return res.json({data:messages,status:true})
 
         } catch (err) {
             return res.status(500)
