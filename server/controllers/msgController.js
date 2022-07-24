@@ -37,11 +37,9 @@ module.exports.getMessages = async(req,res,next)=>{
         
         const {token,receiver} = req.body
 
-        if(!token || ! receiver) return res.status(402)
-        if(!receiver) return res.status(404)
-
+        if(!token || ! receiver) return res.status(402).json({msg: "token is required"})
         const decoded  = jwt.verify(token,process.env.JWT_KEY)
-        if(!decoded) return res.status(403)
+        if(!decoded) return res.status(403).json({msg:"invalid token"})
 
         try {
             const messages  = await MessageSchema.find({sender: decoded._id,receiver:receiver})
