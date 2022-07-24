@@ -16,8 +16,8 @@ module.exports.CreateAccount = async(req,res,next)=>{
 
         //Validation
         const mailPattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-        const namePattern = /^[a-zA-Z\\s]*$/
-        const usernamePattern = /^[a-zA-Z0-9_][a-zA-Z0-9_.]*/;
+        // const namePattern = /^[a-zA-Z\\s]*$/
+        // const usernamePattern = /^[a-zA-Z0-9_][a-zA-Z0-9_.]*/;
         
         if(fullname === "" || username==="" || email==="" || password===""){
            return res.json({msg: "All fields are required",status:false})
@@ -138,7 +138,7 @@ module.exports.verifyAccount = async (req,res,next)=>{
                     const updateUser = await UsersSchema.updateOne({_id: user._id},{$set:{verified:true}})
                     return res.json({msg: "verified", status: false})
                 } catch (err) {
-                    return res.status(500)
+                    return res.status(500).json({msg: "Error"})
                 }
 
             }else{
