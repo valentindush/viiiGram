@@ -53,7 +53,8 @@ module.exports.CreateAccount = async(req,res,next)=>{
                     verificationCode: verficationCode
                 })
                 
-                if(await newUser.save()){
+                try {
+                    await newUser.save()
                     const accessToken =  jwt.sign({id:newUser._id, email: email, username: username, fullname: fullname},process.env.JWT_KEY,{expiresIn: '1d'})
 
                     SendVerificationCode(verficationCode,email,newUser._id)
@@ -61,10 +62,10 @@ module.exports.CreateAccount = async(req,res,next)=>{
                     console.log("done")
                     
                     return res.json({token: accessToken, status: true})
-
-                }else{
-                    return res.json({msg: "db error", status: false})
+                } catch (err) {
+                    return res.status(500)
                 }
+                
             }
         }
         
@@ -133,10 +134,13 @@ module.exports.verifyAccount = async (req,res,next)=>{
         if(user){
 
             if(user.verificationCode == code){
-                const updateUser = await UsersSchema.updateOne({_id: user._id},{$set:{verified:true}})
-                if(updateUser){
+                try {
+                    const updateUser = await UsersSchema.updateOne({_id: user._id},{$set:{verified:true}})
                     return res.json({msg: "verified", status: false})
+                } catch (err) {
+                    return res.status(500)
                 }
+
             }else{
                 return res.json({msg: "Account verification failed", status: false})
             }
