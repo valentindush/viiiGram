@@ -129,8 +129,7 @@ module.exports.verifyAccount = async (req,res,next)=>{
 
     try {
 
-        const code = req.body.code
-        const uuid = req.body.uuid
+        const {code,uuid} = req.body
         const user = await UsersSchema.findById(uuid)
 
         if(user){
@@ -141,8 +140,10 @@ module.exports.verifyAccount = async (req,res,next)=>{
                     return res.json({msg: "verified", status: false})
                 }
             }else{
-                return req.json({msg: "Account verification failed", status: false})
+                return res.json({msg: "Account verification failed", status: false})
             }
+        }else{
+            return res.status(404)
         }
         
     } catch (err) {
