@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Message from '../../components/message'
 import axios from 'axios'
 import img from './cover.png'
-import { getUser, sendMsgRoute } from '../../utils/apiRoutes'
+import { getAllmsgRoute, getUser, sendMsgRoute } from '../../utils/apiRoutes'
 
 export default function Messanger() {
 
@@ -14,6 +14,21 @@ export default function Messanger() {
   const [receiverData,setReceiverData] = useState({})
   const params = useParams()
   const [messages,setMessages] = useState([])
+
+
+
+  const getAllMessages = ()=>{
+    const data = JSON.parse(localStorage.getItem("viigram_access_token"))
+    axios.post(getAllmsgRoute,{
+      token: data.token,
+      receiver: receiverData._id
+    }).then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      throw err
+    })
+  }
+
 
   useEffect(()=>{
 
@@ -30,10 +45,11 @@ export default function Messanger() {
       id: msg_to
     }).then((res)=>{
       if(res.data.user) setReceiverData(res.data.user)
+      getAllMessages()
+
     }).catch((err)=>{
       throw err
     })
-
 
   },[])
 
@@ -55,7 +71,7 @@ export default function Messanger() {
         receiver: receiverData._id,
         msg: msg
       }).then((res)=>{
-        console.log(res)
+        
       }).catch((err)=>{
         throw err
       })

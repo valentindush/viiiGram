@@ -13,6 +13,10 @@ const MessageModel = new mongoose.Schema({
         type: String,
         required: true
     },
+    people: {
+        type: Array,
+        required: true
+    },
     time: {
         type: Date,
         required: true

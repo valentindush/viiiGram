@@ -20,6 +20,7 @@ module.exports.sendMsg = async(req,res,next)=>{
                 msg: msg,
                 sender: decoded.id,
                 receiver: receiver,
+                people: [decoded.id,receiver],
                 time: new Date(Date.now())
             }).save()
             return res.json({newMsg, status: true})
@@ -37,13 +38,16 @@ module.exports.getMessages = async(req,res,next)=>{
     try {
         
         const {token,receiver} = req.body
-
-        if(!token || ! receiver) return res.status(402).json({msg: "token is required"})
+        console.log(req.body)
+        if(!token || !receiver) return res.status(402).json({msg: "token is required"})
         const decoded  = jwt.verify(token,process.env.JWT_KEY)
         if(!decoded) return res.status(403).json({msg:"invalid token"})
 
+        // const arr = []
+        // arr.in
+
         try {
-            const messages  = await MessageSchema.find({sender: decoded._id,receiver:receiver})
+            const messages  = await MessageSchema.find({sender: decoded.id || receiver,receiver:receiver||decoded.id})
             return res.json({data:messages,status:true})
 
         } catch (err) {
