@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Message from '../../components/message'
 import axios from 'axios'
 import img from './cover.png'
-import { getUser } from '../../utils/apiRoutes'
+import { getUser, sendMsgRoute } from '../../utils/apiRoutes'
 
 export default function Messanger() {
 
@@ -13,9 +13,7 @@ export default function Messanger() {
   const navigate = useNavigate()
   const [receiverData,setReceiverData] = useState({})
   const params = useParams()
-  const [messages,setMessages] = useState([{
-    
-  }])
+  const [messages,setMessages] = useState([])
 
   useEffect(()=>{
 
@@ -43,10 +41,24 @@ export default function Messanger() {
   const sendMessage = ()=>{
     if(msg!==""){
 
-      //send MSG
+      //ADD it to the state
+      setMessages([...messages,{
+        sender: "me",
+        reciever: receiverData._id,
+        msg: msg
+      }])
+      setMsg("")
 
-
-      
+      const data = JSON.parse(localStorage.getItem("viigram_access_token"))
+      axios.post(sendMsgRoute,{
+        token: data.token,
+        receiver: receiverData._id,
+        msg: msg
+      }).then((res)=>{
+        console.log(res)
+      }).catch((err)=>{
+        throw err
+      })
 
     }
     
@@ -83,7 +95,7 @@ export default function Messanger() {
           {
             messages.map((msg)=>{
 
-              return <Message type="left" text="Hello thee This is vigram "/>
+              return <Message msg={msg}/>
             })
           }
             

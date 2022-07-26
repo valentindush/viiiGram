@@ -9,8 +9,12 @@ const MessageModel = new mongoose.Schema({
         type: String,
         required: true,
     },
-    reciver: {
+    receiver: {
         type: String,
+        required: true
+    },
+    time: {
+        type: Date,
         required: true
     }
 })

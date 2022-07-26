@@ -8,7 +8,7 @@ module.exports.sendMsg = async(req,res,next)=>{
         const {msg,receiver,token} = req.body
 
         if(!msg || !receiver ||!token) return res.status(402)
-
+        if(msg === "") return res.status(402)
         if(!token) return res.status(403)
 
         const decoded = jwt.verify(token,process.env.JWT_KEY)
@@ -18,12 +18,13 @@ module.exports.sendMsg = async(req,res,next)=>{
 
             const newMsg = MessageSchema({
                 msg: msg,
-                sender: decoded._id,
-                receiver: receiver
-            })
-            await newMsg.save()
-            return res.json({msg, status: true})
+                sender: decoded.id,
+                receiver: receiver,
+                time: new Date(Date.now())
+            }).save()
+            return res.json({newMsg, status: true})
         } catch (err) {
+
             return res.status(500)
         }
 
