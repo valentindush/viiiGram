@@ -213,7 +213,7 @@ module.exports.getUser = async (req,res,next)=>{
     try {
 
         const token = req.body.token
-        const id = req.body.uuid
+        const id = req.body.id
 
         if(!token) return res.json({msg: "wrong tpken request",code: 403, status: false})
         if(!id) return res.json({msg: "wrong id request",code: 403, status: false})
@@ -231,7 +231,7 @@ module.exports.getUser = async (req,res,next)=>{
 
         if(!user) return res.json({msg: "User not found",code: 404, status: false})
 
-        if(user) return res.json({msg: "", code: 200, status: true, result: user})
+        if(user) return res.json({status: true, user: user})
 
 
         

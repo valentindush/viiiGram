@@ -1,35 +1,56 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import Message from '../../components/message'
 import axios from 'axios'
 import img from './cover.png'
+import { getUser } from '../../utils/apiRoutes'
 
 export default function Messanger() {
 
   const [msg, setMsg] = useState("")
   const navigate = useNavigate()
   const [receiverData,setReceiverData] = useState({})
+  const params = useParams()
+  const [messages,setMessages] = useState([{
+    
+  }])
 
   useEffect(()=>{
 
-    const urlParams = new URLSearchParams(window.location.search)
     const token = JSON.parse(localStorage.getItem('viigram_access_token'))
-    const msg_to = urlParams.get('to')
+    const msg_to = params.id
 
     if(!token) navigate('/login')
 
     if(!msg_to) navigate("/chat")
 
-    //Get user data
 
-    
-    
+    axios.post(getUser,{
+      token: token.token,
+      id: msg_to
+    }).then((res)=>{
+      if(res.data.user) setReceiverData(res.data.user)
+    }).catch((err)=>{
+      throw err
+    })
 
 
   },[])
 
+
+  const sendMessage = ()=>{
+    if(msg!==""){
+
+      //send MSG
+
+
+      
+
+    }
+    
+  }
   
 
   return (
@@ -42,7 +63,8 @@ export default function Messanger() {
                   </svg>
                 </a>
                 <img className='w-[30px] h-[30px] object-cover rounded-full' src={img} alt='mdf'/>
-                <span className='text-sm font-medium'>manzi_dickson</span>
+                <span className='text-sm font-medium'>{receiverData.username}</span>
+                {/* <span className='text-xs block'>{receiverData.fullname}</span> */}
             </div>
             <div className='flex flex-row-reverse gap-2 items-center'>
               <div className='st px-3'>
@@ -58,26 +80,14 @@ export default function Messanger() {
             </div>
         </header>
         <div className='msg overflow-auto p-1 h-[90%]'>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="left" text="Hello thee This is vigram you wanna have a talk"/>
-            <Message type="right" text="Hello thee This is vigram you wanna have a talk"/>
+          {
+            messages.map((msg)=>{
+
+              return <Message type="left" text="Hello thee This is vigram "/>
+            })
+          }
+            
+            
         </div>
 
         <div className='input sticky bg-white p-1 flex items-center bottom-[0px] w-full'>
@@ -93,11 +103,11 @@ export default function Messanger() {
               <div className='aud p-1 cursor-pointer '>
                 <svg className='h-[20px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M192 352c53.03 0 96-42.97 96-96h-80C199.2 256 192 248.8 192 240S199.2 224 208 224H288V192h-80C199.2 192 192 184.8 192 176S199.2 160 208 160H288V127.1h-80c-8.836 0-16-7.164-16-16s7.164-16 16-16L288 96c0-53.03-42.97-96-96-96s-96 42.97-96 96v160C96 309 138.1 352 192 352zM344 192C330.7 192 320 202.7 320 215.1V256c0 73.33-61.97 132.4-136.3 127.7c-66.08-4.169-119.7-66.59-119.7-132.8L64 215.1C64 202.7 53.25 192 40 192S16 202.7 16 215.1v32.15c0 89.66 63.97 169.6 152 181.7V464H128c-18.19 0-32.84 15.18-31.96 33.57C96.43 505.8 103.8 512 112 512h160c8.222 0 15.57-6.216 15.96-14.43C288.8 479.2 274.2 464 256 464h-40v-33.77C301.7 418.5 368 344.9 368 256V215.1C368 202.7 357.3 192 344 192z"/></svg>
               </div>
-              <div className='send px-3 py-2 cursor-pointer  bg-pink-300  rounded-xl'>
+              <button onClick={sendMessage} className='send px-3 py-2 cursor-pointer  bg-pink-300  rounded-xl'>
                 <svg className='w-[20px] fill-white h-[20px]' viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path fillRule="evenodd" d="M4.10514201,11.8070619 L2.74013818,2.2520351 L22.236068,12 L2.74013818,21.7479649 L4.10514201,12.1929381 L4.87689437,12 L4.10514201,11.8070619 Z M5.25986182,5.7479649 L5.89485799,10.1929381 L13.1231056,12 L5.89485799,13.8070619 L5.25986182,18.2520351 L17.763932,12 L5.25986182,5.7479649 Z"/>
                 </svg>
-              </div>
+              </button>
             </div>
         </div>
     </div>

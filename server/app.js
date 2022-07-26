@@ -7,6 +7,7 @@ const {PostsRouter} = require("./routes/posts");
 const port = process.env.PORT || 3001
 const bodyParser = require('body-parser')
 const path = require("path");
+const { chatRouter } = require('./routes/chat')
 
 const app = express()
 app.use(express.static('uploads'))
@@ -24,6 +25,7 @@ const connection = mongoose.connect(process.env.DB_URL).then(()=>{
 app.use('/api/auth',AuthRouter)
 app.use('/api/',UsersRouter)
 app.use('/api',PostsRouter)
+app.use('/api',chatRouter)
 
 
 app.listen(port,()=>console.log("server up"))

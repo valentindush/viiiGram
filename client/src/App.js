@@ -26,7 +26,7 @@ function App() {
           <Routes>
             <Route exact path='/'  element={<Home />} />
             <Route path='/chat' element={<Chat/>} />
-            <Route path='/chat/message' element={<Messanger/>}/>
+            <Route path='/chat/message/:id' element={<Messanger/>}/>
             <Route path='/Login' element={<Login hide={hideFunc}/>} />
             <Route exact path='/signup' element={<Signup hide={hideFunc}/>} />
             <Route path='/auth/verification' element={<VerifyAccount hide={hideFunc}/>}/>
