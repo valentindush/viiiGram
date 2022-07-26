@@ -3,19 +3,14 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Message from '../../components/message'
-
+import axios from 'axios'
 import img from './cover.png'
 
 export default function Messanger() {
 
   const [msg, setMsg] = useState("")
   const navigate = useNavigate()
-
-
-  const setMessage = ()=>{
-    
-  }
-
+  const [receiverData,setReceiverData] = useState({})
 
   useEffect(()=>{
 
@@ -26,6 +21,13 @@ export default function Messanger() {
     if(!token) navigate('/login')
 
     if(!msg_to) navigate("/chat")
+
+    //Get user data
+
+    
+    
+
+
   },[])
 
   

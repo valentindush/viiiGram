@@ -1,7 +1,6 @@
 import axios from 'axios'
 import React,{useEffect,useState} from 'react'
 import ChatUser from '../../components/chatUser'
-import img from './cover.png'
 import { useNavigate } from 'react-router-dom'
 import { getAllUsers } from '../../utils/apiRoutes'
 export default function Chat() {
@@ -15,21 +14,12 @@ export default function Chat() {
     const token = JSON.parse(localStorage.getItem('viigram_access_token'))
     if(!token) navigate('/login')
 
-    if(token){
-      setAccessToken(token.token)
-    } 
-  },[])
-
-  useEffect(()=>{
-
-    axios.post(getAllUsers,{token: accessToken}).then((res)=>{
+    axios.post(getAllUsers,{token: token.token}).then((res)=>{
       setUsers(res.data.users)
     }).catch((err)=>{
       throw err
     })
-
-  },[accessToken])
-
+  },[])
 
   return (
     <div className='h-full  px-5 overflow-auto'>
@@ -54,7 +44,7 @@ export default function Chat() {
             {users&&
               users.map((user)=>{
 
-                return <ChatUser key={user._id} username={user.username} img={img} to={`/chat/message?to=${user._id}`} lastmsg= "Workin" />
+                return <ChatUser key={user._id} user={user}  to={`/chat/message?to=${user._id}`} lastmsg= "Workin" />
               })
             }
 

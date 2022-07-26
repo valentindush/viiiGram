@@ -10,14 +10,12 @@ export default function Home() {
     const [postsData,setPostsData] = useState([])
     const [posts,setPosts] = useState(<></>)
     //Checking token
-    const [g_token,setG_token] = useState("")
 
     useEffect(()=>{
         const token = JSON.parse(localStorage.getItem('viigram_access_token'))
         if(!token){
             navigate('/login')
         }
-        setG_token(token.token)
 
         if(token.token){
 
@@ -34,23 +32,15 @@ export default function Home() {
                                 // })
 
                             }
+                        }).catch((err)=>{
+                            navigate("/login")
                         })
-
-                    if(res.data.status !== true){
-                        navigate('/')
-                    }
+                }).catch((err)=>{
+                    navigate('/login')
                 })
         }
     },[])
 
-
-    // const [reload,setReload] = useState(true)
-    // if(reload == true) {
-    //     window.location.reload()
-    //     setReload(false)
-    // }else{
-
-    // }
 
 
   return (

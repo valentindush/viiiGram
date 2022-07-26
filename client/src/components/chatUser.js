@@ -1,13 +1,15 @@
 import React from 'react'
+import img from './cover.png'
 
-export default function ChatUser(props) {
+export default function ChatUser({user,lastmsg}) {
+  console.log(user)
   return (
-    <a href={`${props.to}`} className="relative">
+    <a href={`/chat/message?to=${user._id}`} className="relative">
         <div className='flex items-center gap-2 relative px-1 py-2 shadow-sm hover:bg-slate-100 transition duration-300'>
-            <img className='w-[50px] h-[50px] rounded-full object-cover' src={props.img} alt="ur friend"/>
+            <img className='w-[50px] h-[50px] rounded-full object-cover' src={img} alt="ur friend"/>
             <div className='flex flex-col'>
-                <span className=''>{props.username}</span>
-                <span className='text-xs opacity-80'>{props.lastmsg}</span>
+                <span className=''>{user.username}</span>
+                <span className='text-xs opacity-80'>{lastmsg}</span>
             </div>
         </div>
         <div className='dot  absolute right-2 top-6 opacity-50'>

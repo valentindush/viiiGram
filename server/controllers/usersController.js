@@ -264,18 +264,16 @@ module.exports.follow = async(req,res,next)=>{
             if(userTofollow.username != From__Data.username){
                 if(await UsersSchema.updateOne({_id: userToFollowId}, {$addToSet: {followers: From__Data.username}}) 
                 && await UsersSchema.updateOne({username: From__Data.username},{$addToSet: {following: userToFollowId}} )){
-                    
-                    // console.log(From__Data.username);
-                    // console.log(await UsersSchema.findById(userToFollowId))
+                   
                     return res.json({msg: "followed", status: true,code: 200})
                 }else{
-                    res.json({msg: "failed", status: false, code: 403})
+                    res.status(500).json({msg: "failed", status: false, code: 403})
                 }
             }else{
-                return res.json({msg: "Hcking doesn't work LOl", code: "fck you", status: false})
+                return res.status(403).json({msg: "Hcking doesn't work LOl", code: "fck you", status: false})
             }
         }else{
-            res.json({msg: "failed", status: false, code: 403})
+            res.status(403).json({msg: "failed", status: false, code: 403})
         }
 
 
