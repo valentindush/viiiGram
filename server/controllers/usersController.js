@@ -20,15 +20,15 @@ module.exports.CreateAccount = async(req,res,next)=>{
         // const usernamePattern = /^[a-zA-Z0-9_][a-zA-Z0-9_.]*/;
         
         if(fullname === "" || username==="" || email==="" || password===""){
-           return res.json({msg: "All fields are required",status:false})
+           return res.status(402).json({msg: "All fields are required",status:false})
         }else if(fullname.length < 4 || fullname.length > 20){
-            return res.json({msg: "must not contain special characters and must be between 4 an 20 characters", status: false})
+            return res.status(402).json({msg: "must not contain special characters and must be between 4 an 20 characters", status: false})
         }else if(username.length < 4 || username.length > 20){
-            return res.json({msg:"Username must not contain special characters and must be between 4 an 20 characters",status:false})
+            return res.status(402).json({msg:"Username must not contain special characters and must be between 4 an 20 characters",status:false})
         }else if(!email.match(mailPattern)){
             return res.json({msg:'invalid email address', status:false})
         }else if(password.length <8 || password.length > 20){
-            return res.json({msg:"Password must be at least 8 characters and not more than 20",status: "false"})
+            return res.status(402).json({msg:"Password must be at least 8 characters and not more than 20",status: "false"})
         }else{
             const isEmailtTaken = await UsersSchema.findOne({email: email})
             if(isEmailtTaken){
@@ -172,7 +172,7 @@ module.exports.getAllUsers = async(req,res,next)=>{
         return res.json({users: users, status: true})
 
     } catch (err) {
-        return res.status(503)
+        
         next(err)
     }
 }

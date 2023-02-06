@@ -3,13 +3,13 @@ import img from './cover.png'
 import jwt_decode from 'jwt-decode'
 import ProfilePost from '../../components/profilePost'
 import axios from 'axios'
-import { followRoute, getUser, searchRoute, unfollowRoute } from '../../utils/apiRoutes'
+import { followRoute, getUser, unfollowRoute } from '../../utils/apiRoutes'
 import { useNavigate } from 'react-router-dom'
 export default function Profile() {
     const [currentUser,setCurrentUser] = useState({})
-    const [posts,setPostd] = useState("2,365")
-    const [following,setFollowing] = useState("456")
-    const [followers,setFollowers] = useState("345.2k")
+    const [posts,setPostd] = useState("0")
+    const [following,setFollowing] = useState("0")
+    const [followers,setFollowers] = useState("0")
     const [username,setUsername] = useState("")
     const [fullname,setFullname] = useState("")
     const [bio,setBio] = useState('Music producer || coder "|| gamer')
@@ -58,7 +58,7 @@ export default function Profile() {
 
         
 
-    },[currentUser, currentUser.username, uuid])
+    },[currentUser, currentUser.username, isFollowing, uuid])
 
     const handleFollow = ()=>{
         const token = JSON.parse(localStorage.getItem('viigram_access_token'))

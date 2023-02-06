@@ -55,7 +55,6 @@ module.exports.newPost = async(req,res,next)=>{
                 const userData = await UsersSchema.findOne({username: jwtData.username})
 
                 if (userData) {
-                    console.log("name ::: " + fileName)
                     const new_post = PostSchema({
                         owner: userData.username,
                         postedAt: Date.now(),
@@ -89,7 +88,6 @@ module.exports.newPost = async(req,res,next)=>{
 
 module.exports.getTopPosts = async (req,res,next)=>{
     try{
-
         const token = req.body.token
         if(!token) return res.status(403)
         const userData = jwt.verify(token, process.env.JWT_KEY)

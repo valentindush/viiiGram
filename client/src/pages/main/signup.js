@@ -51,6 +51,7 @@ export default function Signup(props) {
                     
                     setIsLoading(false)
                     if(res.data.status ===true){
+                        setIsLoading(false)
                         console.log(res.data)
                         const accessToken = res.data
 
@@ -58,6 +59,7 @@ export default function Signup(props) {
                         localStorage.setItem('viigram_access_token',JSON.stringify(accessToken))
                         navigate('/')
                     }else{
+                        setIsLoading(false)
                         setErr("Went wrong !")
                     }
                 }).catch((err)=>{
